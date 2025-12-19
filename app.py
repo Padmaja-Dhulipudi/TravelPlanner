@@ -70,22 +70,22 @@ if st.sidebar.button("Generate Plan"):
 
             
     with tab1:
-    transport_options = []
-    if selected_city == "Kakinada":
-        transport_options.append("Local travel only: Auto, Cab, City Bus")
-    else:
-        transport_options.append("Local travel available at your destination")
-    if selected_city in ap_travel_data["bus_routes"]:
-        fare = ap_travel_data["bus_routes"][selected_city]
-        transport_options.append(f"Bus available from Kakinada. Fare: ₹{fare}")
-    if selected_city in ap_travel_data["flights"]:
-        fare = ap_travel_data["flights"][selected_city]
-        transport_options.append(f"Flight available from Rajahmundry. Fare: ₹{fare}")
-    if transport_options:
-        for option in transport_options:
-            st.success(option)
-    else:
-        st.warning("No direct transport available")
+        transport_options = []
+        if selected_city == "Kakinada":
+            transport_options.append("Local travel only: Auto, Cab, City Bus")
+        else:
+            transport_options.append("Local travel available at your destination")
+        if selected_city in ap_travel_data["bus_routes"]:
+            fare = ap_travel_data["bus_routes"][selected_city]
+            transport_options.append(f"Bus available from Kakinada. Fare: ₹{fare}")
+        if selected_city in ap_travel_data["flights"]:
+            fare = ap_travel_data["flights"][selected_city]
+            transport_options.append(f"Flight available from Rajahmundry. Fare: ₹{fare}")
+        if transport_options:
+            for option in transport_options:
+                st.success(option)
+        else:
+            st.warning("No direct transport available")
 
 
     with tab2:
