@@ -42,8 +42,7 @@ ap_travel_data = {
     }
 }
 
-# ADD YOUR OPENWEATHERMAP API KEY HERE
-OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY"
+OPENWEATHER_API_KEY = "db387806b254dde28cb5eae4f65aad66"
 
 def get_weather(city):
     try:
@@ -53,40 +52,40 @@ def get_weather(city):
     except:
         return "Weather unavailable"
 
-st.title("🌍 Andhra Pradesh Travel Planner")
-st.write("Starting Point: **Kakinada (KKD)**")
+st.title("Andhra Pradesh Travel Planner")
+st.write("Starting Point: Kakinada")
 
-destinations = list(ap_travel_data["cities"].keys())
-destinations.remove("Kakinada")
-
-selected_city = st.selectbox("Select Destination", destinations)
+cities = list(ap_travel_data["cities"].keys())
+selected_city = st.selectbox("Select Destination", cities)
 
 if st.button("Generate Travel Plan"):
-    st.subheader(f"📍 {selected_city}")
+    st.subheader(selected_city)
 
-    st.subheader("🚌 Transport")
-    if selected_city in ap_travel_data["bus_routes"]:
-        st.success(f"Bus Available | Fare ₹{ap_travel_data['bus_routes'][selected_city]}")
+    st.subheader("Transport")
+    if selected_city == "Kakinada":
+        st.info("Local travel only: Auto / Cab / Bus")
+    elif selected_city in ap_travel_data["bus_routes"]:
+        st.success(f"Bus available. Fare: ₹{ap_travel_data['bus_routes'][selected_city]}")
     elif selected_city in ap_travel_data["flights"]:
-        st.success(f"Flight from Rajahmundry | Fare ₹{ap_travel_data['flights'][selected_city]}")
+        st.success(f"Flight available from Rajahmundry. Fare: ₹{ap_travel_data['flights'][selected_city]}")
     else:
         st.warning("No direct transport available")
 
-    st.subheader("🏨 Hotels")
+    st.subheader("Hotels")
     for h in ap_travel_data["cities"][selected_city]["hotels"]:
-        st.write(f"• {h['name']} | ⭐ {h['rating']} | ₹{h['price']}")
+        st.write(f"{h['name']} | Rating {h['rating']} | ₹{h['price']}")
 
-    st.subheader("📍 Attractions")
+    st.subheader("Attractions")
     for a in ap_travel_data["cities"][selected_city]["attractions"]:
-        st.write(f"• {a}")
+        st.write(a)
 
-    st.subheader("🌤 Weather")
+    st.subheader("Weather")
     st.info(get_weather(selected_city))
 
-    st.subheader("🧠 3-Day Itinerary")
+    st.subheader("Three-Day Itinerary")
     attractions = ap_travel_data["cities"][selected_city]["attractions"]
     for i in range(3):
         if i < len(attractions):
-            st.write(f"Day {i+1}: Visit {attractions[i]}")
+            st.write(f"Day {i + 1}: Visit {attractions[i]}")
         else:
-            st.write(f"Day {i+1}: Explore local food & markets")
+            st.write(f"Day {i + 1}: Explore local food and markets")
