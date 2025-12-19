@@ -38,7 +38,8 @@ ap_travel_data = {
         "Annavaram": 100,
         "Lambasinghi": 200,
         "Visakhapatnam": 300,
-        "Rajahmundry": 150
+        "Rajahmundry": 150,
+        "Aruku" : 350
     },
     "flights": {
         "Visakhapatnam": 2500
