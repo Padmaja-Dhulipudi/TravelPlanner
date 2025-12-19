@@ -44,7 +44,7 @@ ap_travel_data = {
     }
 }
 
-OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY"
+OPENWEATHER_API_KEY = "db387806b254dde28cb5eae4f65aad66"
 
 def get_weather(city):
     try:
@@ -68,15 +68,25 @@ if st.sidebar.button("Generate Plan"):
         ["Transport", "Hotels", "Attractions", "Weather", "Itinerary"]
     )
 
+            
     with tab1:
-        if selected_city == "Kakinada":
-            st.info("Local travel only: Auto, Cab, City Bus")
-        elif selected_city in ap_travel_data["bus_routes"]:
-            st.success(f"Bus available from Kakinada. Fare: ₹{ap_travel_data['bus_routes'][selected_city]}")
-        elif selected_city in ap_travel_data["flights"]:
-            st.success(f"Flight available from Rajahmundry. Fare: ₹{ap_travel_data['flights'][selected_city]}")
-        else:
-            st.warning("No direct transport available")
+    transport_options = []
+    if selected_city == "Kakinada":
+        transport_options.append("Local travel only: Auto, Cab, City Bus")
+    else:
+        transport_options.append("Local travel available at your destination")
+    if selected_city in ap_travel_data["bus_routes"]:
+        fare = ap_travel_data["bus_routes"][selected_city]
+        transport_options.append(f"Bus available from Kakinada. Fare: ₹{fare}")
+    if selected_city in ap_travel_data["flights"]:
+        fare = ap_travel_data["flights"][selected_city]
+        transport_options.append(f"Flight available from Rajahmundry. Fare: ₹{fare}")
+    if transport_options:
+        for option in transport_options:
+            st.success(option)
+    else:
+        st.warning("No direct transport available")
+
 
     with tab2:
         for h in ap_travel_data["cities"][selected_city]["hotels"]:
