@@ -45,29 +45,36 @@ ap_travel_data = {
     }
 }
 
-weather_city_map = {
-    "Kakinada": "Kakinada,IN",
-    "Annavaram": "Annavaram,IN",
-    "Lambasinghi": "Chintapalli,IN",
-    "Visakhapatnam": "Visakhapatnam,IN",
-    "Rajahmundry": "Rajahmundry,IN",
-    "Aruku": "Araku Valley,IN"
+weather_location_map = {
+    "Kakinada": {"q": "Kakinada,IN"},
+    "Annavaram": {"q": "Annavaram,IN"},
+    "Visakhapatnam": {"q": "Visakhapatnam,IN"},
+    "Rajahmundry": {"q": "Rajahmundry,IN"},
+    "Lambasinghi": {"lat": 17.8715, "lon": 82.3060},
+    "Aruku": {"lat": 18.3273, "lon": 82.8773}
 }
+
 
 OPENWEATHER_API_KEY = st.secrets["OPENWEATHER_API_KEY"]
 
 def get_weather(city):
-    if not OPENWEATHER_API_KEY:
-        return "Weather API key not configured"
     try:
-        api_city = weather_city_map.get(city, city)
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={api_city}&appid={OPENWEATHER_API_KEY}&units=metric"
+        location = weather_location_map.get(city)
+
+        if "q" in location:
+            url = f"https://api.openweathermap.org/data/2.5/weather?q={location['q']}&appid={OPENWEATHER_API_KEY}&units=metric"
+        else:
+            url = f"https://api.openweathermap.org/data/2.5/weather?lat={location['lat']}&lon={location['lon']}&appid={OPENWEATHER_API_KEY}&units=metric"
+
         data = requests.get(url, timeout=5).json()
+
         if data.get("cod") != 200:
             return "Weather unavailable"
+
         return f"{data['weather'][0]['description'].title()}, {data['main']['temp']} °C"
     except:
         return "Weather unavailable"
+
 
 st.title("Andhra Pradesh Travel Planner")
 st.caption("Starting Point: Kakinada")
