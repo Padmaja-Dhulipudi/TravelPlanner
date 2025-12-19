@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 
+st.set_page_config(page_title="Andhra Pradesh Travel Planner", layout="wide")
+
 ap_travel_data = {
     "cities": {
         "Kakinada": {
@@ -42,50 +44,62 @@ ap_travel_data = {
     }
 }
 
-OPENWEATHER_API_KEY = "db387806b254dde28cb5eae4f65aad66"
+OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY"
 
 def get_weather(city):
     try:
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_API_KEY}&units=metric"
         data = requests.get(url).json()
-        return f"{data['weather'][0]['description']}, {data['main']['temp']}°C"
+        return f"{data['weather'][0]['description'].title()}, {data['main']['temp']} °C"
     except:
         return "Weather unavailable"
 
 st.title("Andhra Pradesh Travel Planner")
-st.write("Starting Point: Kakinada")
+st.caption("Starting Point: Kakinada")
 
+st.sidebar.header("Travel Selection")
 cities = list(ap_travel_data["cities"].keys())
-selected_city = st.selectbox("Select Destination", cities)
+selected_city = st.sidebar.selectbox("Choose Destination", cities)
 
-if st.button("Generate Travel Plan"):
-    st.subheader(selected_city)
+if st.sidebar.button("Generate Plan"):
+    st.subheader(f"Destination: {selected_city}")
 
-    st.subheader("Transport")
-    if selected_city == "Kakinada":
-        st.info("Local travel only: Auto / Cab / Bus")
-    elif selected_city in ap_travel_data["bus_routes"]:
-        st.success(f"Bus available. Fare: ₹{ap_travel_data['bus_routes'][selected_city]}")
-    elif selected_city in ap_travel_data["flights"]:
-        st.success(f"Flight available from Rajahmundry. Fare: ₹{ap_travel_data['flights'][selected_city]}")
-    else:
-        st.warning("No direct transport available")
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["Transport", "Hotels", "Attractions", "Weather", "Itinerary"]
+    )
 
-    st.subheader("Hotels")
-    for h in ap_travel_data["cities"][selected_city]["hotels"]:
-        st.write(f"{h['name']} | Rating {h['rating']} | ₹{h['price']}")
-
-    st.subheader("Attractions")
-    for a in ap_travel_data["cities"][selected_city]["attractions"]:
-        st.write(a)
-
-    st.subheader("Weather")
-    st.info(get_weather(selected_city))
-
-    st.subheader("Three-Day Itinerary")
-    attractions = ap_travel_data["cities"][selected_city]["attractions"]
-    for i in range(3):
-        if i < len(attractions):
-            st.write(f"Day {i + 1}: Visit {attractions[i]}")
+    with tab1:
+        if selected_city == "Kakinada":
+            st.info("Local travel only: Auto, Cab, City Bus")
+        elif selected_city in ap_travel_data["bus_routes"]:
+            st.success(f"Bus available from Kakinada. Fare: ₹{ap_travel_data['bus_routes'][selected_city]}")
+        elif selected_city in ap_travel_data["flights"]:
+            st.success(f"Flight available from Rajahmundry. Fare: ₹{ap_travel_data['flights'][selected_city]}")
         else:
-            st.write(f"Day {i + 1}: Explore local food and markets")
+            st.warning("No direct transport available")
+
+    with tab2:
+        for h in ap_travel_data["cities"][selected_city]["hotels"]:
+            st.markdown(
+                f"""
+                **{h['name']}**  
+                Rating: {h['rating']}  
+                Price per night: ₹{h['price']}
+                """
+            )
+            st.divider()
+
+    with tab3:
+        for a in ap_travel_data["cities"][selected_city]["attractions"]:
+            st.write(f"- {a}")
+
+    with tab4:
+        st.info(get_weather(selected_city))
+
+    with tab5:
+        attractions = ap_travel_data["cities"][selected_city]["attractions"]
+        for i in range(3):
+            if i < len(attractions):
+                st.write(f"Day {i + 1}: Visit {attractions[i]}")
+            else:
+                st.write(f"Day {i + 1}: Explore local food and markets")
